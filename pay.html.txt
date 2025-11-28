@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Processing Payment…</title>
+<style>
+body{
+    background:#f7f9ff;
+    font-family:Arial, sans-serif;
+    text-align:center;
+    padding-top:60px;
+}
+.box{
+    background:#fff;
+    padding:26px;
+    border-radius:14px;
+    max-width:350px;
+    margin:auto;
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Redirecting to UPI App…</h2>
+    <p>Please wait, do not press back.</p>
+</div>
+
+<script>
+// Get parameters
+const url = new URL(window.location.href);
+const amt = url.searchParams.get("amt");
+const type = url.searchParams.get("type");
+
+const upiId = "7742433155-2@axl";
+const payee = "Neelakshi";
+const remark = `${type} EMI Payment`;
+
+const link =
+  `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payee)}&am=${encodeURIComponent(amt)}&cu=INR&tn=${encodeURIComponent(remark)}`;
+
+// Create clickable anchor (Chrome-safe)
+const a = document.createElement("a");
+a.href = link;
+
+// Auto trigger UPI
+document.body.appendChild(a);
+setTimeout(() => {
+    a.click();
+}, 600);
+
+// In case UPI fails:
+setTimeout(() => {
+    document.body.innerHTML += "<p>If UPI didn’t open, tap below:</p><br>"
+      + `<a href="${link}" style="font-size:20px;">Open UPI</a>`;
+}, 3000);
+</script>
+
+</body>
+</html>
