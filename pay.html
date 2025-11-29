@@ -5,7 +5,7 @@
 <title>Processing Payment…</title>
 <style>
 body{
-    background:#f7f9ff;
+    background:#eef3ff;
     font-family:Arial, sans-serif;
     text-align:center;
     padding-top:60px;
@@ -16,7 +16,31 @@ body{
     border-radius:14px;
     max-width:350px;
     margin:auto;
-    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+    box-shadow:0 8px 25px rgba(0,0,0,0.18);
+}
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3b82f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin:auto;
+  margin-bottom:14px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.btn {
+  display:inline-block;
+  margin-top:14px;
+  padding:12px 20px;
+  background:#3b82f6;
+  color:#fff;
+  text-decoration:none;
+  border-radius:10px;
+  font-weight:600;
 }
 </style>
 </head>
@@ -24,6 +48,7 @@ body{
 <body>
 
 <div class="box">
+    <div class="loader"></div>
     <h2>Redirecting to UPI App…</h2>
     <p>Please wait, do not press back.</p>
 </div>
@@ -36,10 +61,21 @@ const type = url.searchParams.get("type");
 
 const upiId = "7742433155-2@axl";
 const payee = "Neelakshi";
+
+// Final remark
 const remark = `${type} EMI Payment`;
 
+// ⭐ PhonePe-Compatible Merchant UPI Deep Link
 const link =
-  `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payee)}&am=${encodeURIComponent(amt)}&cu=INR&tn=${encodeURIComponent(remark)}`;
+  `upi://pay?pa=${upiId}` +
+  `&pn=${encodeURIComponent(payee)}` +
+  `&am=${encodeURIComponent(amt)}` +
+  `&cu=INR` +
+  `&tn=${encodeURIComponent(remark)}` +
+  `&mc=5411` +
+  `&mode=02` +
+  `&purpose=00` +
+  `&orgid=000000`;  // forces PhonePe merchant-mode opening
 
 // Create clickable anchor (Chrome-safe)
 const a = document.createElement("a");
@@ -47,15 +83,16 @@ a.href = link;
 
 // Auto trigger UPI
 document.body.appendChild(a);
+
 setTimeout(() => {
     a.click();
-}, 600);
+}, 700);
 
-// In case UPI fails:
+// Fallback: Manual button if auto open fails
 setTimeout(() => {
     document.body.innerHTML += "<p>If UPI didn’t open, tap below:</p><br>"
-      + `<a href="${link}" style="font-size:20px;">Open UPI</a>`;
-}, 3000);
+      + `<a class="btn" href="${link}">Open UPI</a>`;
+}, 2500);
 </script>
 
 </body>
